@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using application_insight_dotnetcore.Models;
+using application_insight_dotnetcore.ObservabilityPlatform;
 
 namespace application_insight_dotnetcore.Controllers
 {
@@ -40,6 +41,7 @@ namespace application_insight_dotnetcore.Controllers
             _logger.LogInformation("Request received");
             _logger.LogWarning("Request Warning");
             _logger.LogError("Request Errored");
+            await _client.GetAsync("https://eos-ple.azurewebsites.net/health/ping");
             await DoWork();
             if (_random.Next(100) % 2 == 0)
             {

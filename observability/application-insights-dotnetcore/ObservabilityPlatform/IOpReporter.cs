@@ -1,6 +1,6 @@
 using Microsoft.ApplicationInsights.Channel;
 
-namespace application_insight_dotnetcore
+namespace application_insight_dotnetcore.ObservabilityPlatform
 {
     public interface IOpReporter
     {

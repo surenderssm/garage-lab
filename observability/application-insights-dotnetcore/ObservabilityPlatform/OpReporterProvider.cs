@@ -1,4 +1,4 @@
-namespace application_insight_dotnetcore
+namespace application_insight_dotnetcore.ObservabilityPlatform
 {
     public static class OpReporterProvider
     {
