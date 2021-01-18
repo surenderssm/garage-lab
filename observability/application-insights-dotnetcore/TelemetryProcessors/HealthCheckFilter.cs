@@ -34,10 +34,10 @@ namespace application_insight_dotnetcore
             { return; }
 
             // filter the pings
-            if (request != null && request.Url.AbsolutePath.Contains("/health/ping", StringComparison.OrdinalIgnoreCase))
-            {
-                return;
-            }
+            // if (request != null && request.Url.AbsolutePath.Contains("/health/ping", StringComparison.OrdinalIgnoreCase))
+            // {
+            //     return;
+            // }
             // Send everything else
             this.Next.Process(item);
         }

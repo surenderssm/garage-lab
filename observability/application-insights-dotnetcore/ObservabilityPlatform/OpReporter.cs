@@ -8,7 +8,7 @@ using Microsoft.ApplicationInsights.Metrics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace application_insight_dotnetcore
+namespace application_insight_dotnetcore.ObservabilityPlatform
 {
     /// <summary>
     /// OpReporter to report custom metrics in it's own instance
@@ -73,19 +73,18 @@ namespace application_insight_dotnetcore
                 if (item is RequestTelemetry)
                 {
                     var requestItem = item as RequestTelemetry;
-                    // TODO : make use of _options.IncomingFilterPath
-                    // filter the pings or any health check
-                    // or the paths given in the config
-                    if (requestItem != null && requestItem.Url.AbsolutePath.Contains("/health/ping", StringComparison.OrdinalIgnoreCase))
+                    if (IsValidIncomingItem(requestItem))
                     {
-                        return;
+                        RecordIncomingRequest(requestItem.Duration.Milliseconds, requestItem.ResponseCode);
                     }
-                    RecordIncomingRequest(requestItem.Duration.Milliseconds, requestItem.ResponseCode);
                 }
                 else if (item is DependencyTelemetry)
                 {
                     var dependecyItem = item as DependencyTelemetry;
-                    RecordOutgoingRequest(dependecyItem.Duration.Milliseconds, dependecyItem.ResultCode);
+                    if (IsValidOutgoingItem(dependecyItem))
+                    {
+                        RecordOutgoingRequest(dependecyItem.Duration.Milliseconds, dependecyItem.ResultCode);
+                    }
                 }
                 else if (item is TraceTelemetry)
                 {
@@ -210,6 +209,7 @@ namespace application_insight_dotnetcore
         {
             if (_options.IsEnabled)
             {
+                _options.PreProcess();
                 InitializeClient();
                 InitializeMetrics();
                 _logger.LogInformation("Reporter is Enabled and initialized");
@@ -241,6 +241,51 @@ namespace application_insight_dotnetcore
                                                         ServiceNameKey, ResultCodeKey, OperationNameKey);
 
             _jobDurationMetric = _client.GetMetric(jobDurationMetricId);
+        }
+
+        /// <summary>
+        /// Check if the incoming item is not part of FilterPaths
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        private bool IsValidIncomingItem(RequestTelemetry item)
+        {
+            if (_options.IncomingFilterPaths?.Count > 0 && item?.Url?.AbsoluteUri != null)
+            {
+                foreach (var filterPath in _options.IncomingFilterPaths)
+                {
+                    if (item.Url.AbsoluteUri.Contains(filterPath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Check if the outgoing item is not part of FilterPaths
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        private bool IsValidOutgoingItem(DependencyTelemetry item)
+        {
+            if (_options.OutgoingFilterPaths?.Count > 0 && item != null)
+            {
+                foreach (var filterPath in _options.IncomingFilterPaths)
+                {
+                    if (item.Data != null && item.Data.Contains(filterPath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                    // sql server anme and other details will be available in Name
+                    if (item.Name != null && item.Name.Contains(filterPath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 }

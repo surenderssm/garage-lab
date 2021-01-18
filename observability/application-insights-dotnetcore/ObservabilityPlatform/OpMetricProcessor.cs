@@ -2,7 +2,7 @@ using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 
-namespace application_insight_dotnetcore
+namespace application_insight_dotnetcore.ObservabilityPlatform
 {
     /// <summary>
     /// OpMetricTelemetryProcessor processor to be injected in the pipeline of the source app (appinsight)
