@@ -34,11 +34,26 @@ namespace ObservabilityPlatform
             _next.Process(item);
         }
 
+        /// <summary>
+        /// IsValidForProcessing override incase one want to 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public virtual bool IsValidForProcessing(ITelemetry item)
+        {
+            return true;
+        }
+
         private void ProcessViaReporter(ITelemetry item)
         {
             try
             {
                 if (Reporter == null || Reporter.IsEnabled == false || item == null)
+                {
+                    return;
+                }
+
+                if (IsValidForProcessing(item) == false)
                 {
                     return;
                 }
