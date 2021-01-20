@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using application_insight_dotnetcore.Models;
-using application_insight_dotnetcore.ObservabilityPlatform;
+using ObservabilityPlatform;
 
 namespace application_insight_dotnetcore.Controllers
 {
