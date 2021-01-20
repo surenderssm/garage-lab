@@ -1,12 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.ApplicationInsights;
-using Microsoft.ApplicationInsights.Channel;
-using Microsoft.ApplicationInsights.DataContracts;
-using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.ApplicationInsights.Metrics;
-using Microsoft.Extensions.Configuration;
 
 namespace ObservabilityPlatform
 {
@@ -20,7 +13,7 @@ namespace ObservabilityPlatform
         public IList<string> OutgoingFilterPaths { get; set; }
 
         /// <summary>
-        /// Pre-processing on the members for consistency of the platform
+        /// ValidateAndPreProcess Pre-processing on the members for consistency of the platform
         /// </summary>
         public void ValidateAndPreProcess()
         {

@@ -1,8 +1,5 @@
 using Xunit;
 using Microsoft.ApplicationInsights.DataContracts;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Moq;
 using System;
 
 namespace ObservabilityPlatform.Tests
@@ -25,10 +22,26 @@ namespace ObservabilityPlatform.Tests
         }
 
         [Fact]
+        public void CheckMetricProcessorWithDisabledOpReporter()
+        {
+            var dummyProcessor = new DummyProcessor();
+            var options = GetOpReporterOptions();
+            options.IsEnabled = false;
+            OpReporterProvider.Reporter = new OpReporter(options);
+
+            var processor = new OpMetricTelemetryProcessor(dummyProcessor);
+            var item = new RequestTelemetry();
+            processor.Process(item);
+            Assert.True(dummyProcessor.Count == 1);
+        }
+
+        [Fact]
         public void CheckMetricProcessorWithValidOpReporter()
         {
             var dummyProcessor = new DummyProcessor();
-            SetOpReporter();
+            OpReporterProvider.Reporter = GetOpReporter();
+
+
             var reporter = (OpReporterProvider.Reporter as OpReporter);
             var metric = reporter.Client.GetMetric(Constants.IncomingRequestsDurationMetricName, Constants.ServiceLineKey,
                                                      Constants.ServiceNameKey, Constants.ResultCodeKey);
@@ -50,7 +63,7 @@ namespace ObservabilityPlatform.Tests
             Assert.True(metric.SeriesCount == 3);
         }
 
-        private void SetOpReporter()
+        private OpReporter GetOpReporter()
         {
             var options = new OpReporterOptions
             {
@@ -59,7 +72,19 @@ namespace ObservabilityPlatform.Tests
                 ServiceLine = "A",
                 ServiceName = "1"
             };
-            OpReporterProvider.Reporter = new OpReporter(Mock.Of<ILogger<OpReporter>>(), options);
+            return new OpReporter(options);
+        }
+
+        private OpReporterOptions GetOpReporterOptions()
+        {
+            var options = new OpReporterOptions
+            {
+                IsEnabled = true,
+                InstrumentationKey = "test",
+                ServiceLine = "A",
+                ServiceName = "1"
+            };
+            return options;
         }
     }
 }
