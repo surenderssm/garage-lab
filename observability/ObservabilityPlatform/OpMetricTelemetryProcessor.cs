@@ -44,11 +44,24 @@ namespace ObservabilityPlatform
             return true;
         }
 
+        private IOpReporter GetReporter()
+        {
+            // This is because in some apps Processor initialization is happening before 
+            // OpReporterProvider.Reporter is even initialized
+            // Non Null Reporter being set from outside will be honored
+            if (Reporter == null)
+            {
+                return OpReporterProvider.Reporter;
+            }
+            return Reporter;
+        }
+
         private void ProcessViaReporter(ITelemetry item)
         {
             try
             {
-                if (Reporter == null || Reporter.IsEnabled == false || item == null)
+                var reporter = GetReporter();
+                if (reporter == null || reporter.IsEnabled == false || item == null)
                 {
                     return;
                 }
@@ -70,7 +83,7 @@ namespace ObservabilityPlatform
                     var requestItem = item as RequestTelemetry;
                     if (IsValidIncomingItem(requestItem))
                     {
-                        Reporter.RecordIncomingRequest(requestItem.Duration.Milliseconds, requestItem.ResponseCode);
+                        reporter.RecordIncomingRequest(requestItem.Duration.Milliseconds, requestItem.ResponseCode);
                     }
                 }
                 else if (item is DependencyTelemetry)
@@ -78,7 +91,7 @@ namespace ObservabilityPlatform
                     var dependecyItem = item as DependencyTelemetry;
                     if (IsValidOutgoingItem(dependecyItem))
                     {
-                        Reporter.RecordOutgoingRequest(dependecyItem.Duration.Milliseconds, dependecyItem.ResultCode);
+                        reporter.RecordOutgoingRequest(dependecyItem.Duration.Milliseconds, dependecyItem.ResultCode);
                     }
                 }
                 else if (item is TraceTelemetry)
@@ -86,16 +99,16 @@ namespace ObservabilityPlatform
                     var errorItem = item as TraceTelemetry;
                     if (errorItem.SeverityLevel == SeverityLevel.Error)
                     {
-                        Reporter.RecordError();
+                        reporter.RecordError();
                     }
                     else if (errorItem.SeverityLevel == SeverityLevel.Critical)
                     {
-                        Reporter.RecordCriticalError();
+                        reporter.RecordCriticalError();
                     }
                 }
                 else if (item is ExceptionTelemetry)
                 {
-                    Reporter.RecordException();
+                    reporter.RecordException();
                 }
             }
             catch (Exception ex)

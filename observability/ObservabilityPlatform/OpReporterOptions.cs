@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ObservabilityPlatform
 {
@@ -35,6 +36,17 @@ namespace ObservabilityPlatform
 
             ServiceLine = ServiceLine.ToLower();
             ServiceName = ServiceName.ToLower();
+
+            // remove invalid strings from filter paths
+            if (IncomingFilterPaths?.Count > 0)
+            {
+                IncomingFilterPaths = IncomingFilterPaths.Where(item => !string.IsNullOrWhiteSpace(item)).ToList();
+            }
+
+            if (OutgoingFilterPaths?.Count > 0)
+            {
+                OutgoingFilterPaths = OutgoingFilterPaths.Where(item => !string.IsNullOrWhiteSpace(item)).ToList();
+            }
         }
     }
 }
