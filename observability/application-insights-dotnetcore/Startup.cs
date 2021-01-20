@@ -1,4 +1,4 @@
-using application_insight_dotnetcore.ObservabilityPlatform;
+using ObservabilityPlatform;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -28,12 +28,15 @@ namespace application_insight_dotnetcore
 
             var intermediateServiceProvider = services.BuildServiceProvider();
             var reporter = intermediateServiceProvider.GetService<IOpReporter>();
+
+            // Step 1 . Register OpReporter in OpReporterProvider
             OpReporterProvider.Reporter = reporter;
 
             // Register application Insights
             services.AddApplicationInsightsLoggerProvider(Configuration);
-            services.AddApplicationInsightsTelemetryProcessor<OpMetricTelemetryProcessor>();
 
+            // Step 2 . Register Telemetry Processor reponsible for reporting metrics
+            services.AddApplicationInsightsTelemetryProcessor<OpMetricTelemetryProcessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

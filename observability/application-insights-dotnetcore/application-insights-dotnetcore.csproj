@@ -7,5 +7,7 @@
  <ItemGroup>
       <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.12.1" />
   </ItemGroup>
-
+ <ItemGroup>
+    <ProjectReference Include="..\ObservabilityPlatform\ObservabilityPlatform.csproj" />
+ </ItemGroup>
 </Project>
