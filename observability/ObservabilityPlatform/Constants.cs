@@ -1,7 +1,7 @@
 namespace ObservabilityPlatform
 {
     /// <summary>
-    /// OpReporter to report custom metrics in it's own instance
+    /// Constants for the platform
     /// </summary>
     public class Constants
     {
