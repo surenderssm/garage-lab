@@ -1,0 +1,69 @@
+import './App.css';
+import vscode from './vscode.jpg'
+// component is a function which returns little bit of UI
+
+// every react js component has access to props object
+// props : property bag
+
+function Header(props) {
+  // console.log(props);
+  return (
+    <header>
+      <h1>{props.name} School</h1>
+    </header>
+  )
+}
+      // http://github.com/surenderssm.png
+
+function Main(props) {
+  return (
+    <section>
+      <p>This is our School. We make {props.skills} education more accessible.</p>
+      <img src={vscode}
+        height={200}
+        alt="Visual Studio Code Icon"
+      />
+      <ul style={{ textAlign: 'left' }}>
+        {props.topics.map((topic) => (
+          // key can help you in managing state
+          <li key={topic.id}>{topic.title}</li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+function Footer(props) {
+  return (
+    <section>
+      <p>Copyright @{props.year}.</p>
+    </section>
+  )
+}
+
+const topics =
+  ["Data structure",
+    "Algorithm",
+    "API",
+    "Cloud",
+    "UI",
+    "Javascript"
+  ];
+
+const topicObjects = topics.map((topic, i) => ({ id: i, title: topic }));
+
+console.log(topicObjects);
+// topics.map((topic) => console.log(topic));
+
+// react : className instead of class
+function App() {
+  return (
+    <div className="App">
+      <Header name="Pahal" />
+      <Main skills="computer" topics={topicObjects} />
+      <Footer year={new Date().getFullYear()} />
+    </div>
+  );
+}
+
+export default App;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Security;
+﻿using System.Security;
 using System.Threading.Tasks;
 
 namespace code_reviews_experiments
@@ -9,14 +8,19 @@ namespace code_reviews_experiments
         public string Name { get; set; }
         public string Author { get; set; }
     }
+// Immutability : Whose state cannot be modified after it is created.
+
+// String objects are immutable: they cannot be changed after they have been created. All of the String methods and C# operators that appear to modify a string actually return the results in a new string object
+
 
     public class CaseOne : BaseCase
     {
-
         public async Task ExecuteAsync()
         {
-            await DoWork();
+            var request = new FileRequest { Name = "1", Author = "v8" };
+            await OpenFile(request);
         }
+
         public async Task OpenFile(FileRequest request)
         {
             if (!HasPermission(request.Name)) throw new SecurityException();
@@ -34,8 +38,8 @@ namespace code_reviews_experiments
         {
             // some logic
             await DoWork();
-
         }
+
         public async Task OpenFile(string filename)
         {
             if (!HasPermission(filename)) throw new SecurityException();
