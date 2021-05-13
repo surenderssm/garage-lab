@@ -69,7 +69,7 @@ namespace code_reviews_experiments
                 return operand + operand2;
             }
 
-            catch (KeyNotFoundException e)
+            catch (KeyNotFoundException)
             {
                 return 0;
             }

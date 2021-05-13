@@ -37,6 +37,7 @@ namespace code_reviews_experiments
         {
             var aPoint = new { X = 100, Y = 10 };
             var bPoint = (X: 100, Y: 10);
+            Console.Write(bPoint.X + aPoint.X);
         }
 
         private static async Task SimulatedWorkAsync()
