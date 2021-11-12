@@ -1,14 +1,11 @@
-# Delete all the azure resource groups from the given sub. Honors the exeption resource group.
 Connect-AzAccount -Tenant ""
 Set-AzContext -Subscription ""
-$exceptionRg ="azloadalpha-rg"
-
 $rgs = Get-AzResourceGroup
 
 foreach ($rg in $rgs) {
     
-    if ($rg.ResourceGroupName -eq $exceptionRg) {
-        Write-Output "Skipping"
+    if ($rg.ResourceGroupName -eq "abc") {
+        Write-Output "Skipping abc"
         $rg.ResourceGroupName
     }
     else {
